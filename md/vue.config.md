@@ -42,3 +42,38 @@
 
 ## HtmlWebpackPlugin组件的使用
 
+
+
+
+
+
+
+##指定特殊符号为固定路径
+
+
+    resolve: {
+        alias: {
+            '@': 'D:\\project\\mine\\src',
+            vue$: 'vue/dist/vue.runtime.esm.js'
+        },
+	}
+
+
+这里在项目中@代表src下的路径
+
+
+vue-cli中的用法：
+
+
+
+	const path=require('path');
+	const resolve = dir => path.join(__dirname, dir);
+	module.exports = {
+	    lintOnSave: true,
+	    chainWebpack: config => {
+	            config.resolve.alias
+	                .set('_c', resolve('src/components')).
+            		.set('_c', '@/components')
+	        }
+	    }
+	}

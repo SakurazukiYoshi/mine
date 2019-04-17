@@ -1,8 +1,8 @@
 import Vue, { VNodeDirective } from 'vue'
 
-/** Options used in Loading service */
+/** Options used in loading service */
 export interface LoadingServiceOptions {
-  /** The DOM node Loading needs to cover. Accepts a DOM object or a string. If it's a string, it will be passed to `document.querySelector` to get the corresponding DOM node */
+  /** The DOM node loading needs to cover. Accepts a DOM object or a string. If it's a string, it will be passed to `document.querySelector` to get the corresponding DOM node */
   target?: HTMLElement | string
 
   /** Whether to make the mask append to the body element */
@@ -14,7 +14,7 @@ export interface LoadingServiceOptions {
   /** Whether to disable scrolling on body */
   lock?: boolean
 
-  /** Loading text that displays under the spinner */
+  /** loading text that displays under the spinner */
   text?: string
 
   /** Class name of the custom spinner */
@@ -23,17 +23,17 @@ export interface LoadingServiceOptions {
   /** Background color of the mask */
   background?: string
 
-  /** Custom class name for Loading */
+  /** Custom class name for loading */
   customClass?: string
 }
 
-/** Loading Component */
+/** loading Component */
 export declare class ElLoadingComponent extends Vue {
-  /** Close the Loading instance */
+  /** Close the loading instance */
   close (): void
 }
 
-/** Loading directive definition */
+/** loading directive definition */
 export interface ElLoadingDirective extends VNodeDirective {
   name: 'loading',
   value: boolean,
@@ -45,10 +45,10 @@ export interface ElLoadingDirective extends VNodeDirective {
 
 /** Show animation while loading data */
 export interface ElLoading {
-  /** Install Loading directive into Vue */
+  /** Install loading directive into Vue */
   install (vue: typeof Vue): void
 
-  /** If you do not have a specific DOM node to attach the Loading directive, or if you simply prefer not to use Loading as a directive, you can call this service with some configs to open a Loading instance. */
+  /** If you do not have a specific DOM node to attach the loading directive, or if you simply prefer not to use loading as a directive, you can call this service with some configs to open a loading instance. */
   service (options: LoadingServiceOptions): ElLoadingComponent
 
   directive: object
@@ -56,7 +56,7 @@ export interface ElLoading {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    /** If you do not have a specific DOM node to attach the Loading directive, or if you simply prefer not to use Loading as a directive, you can call this service with some configs to open a Loading instance. */
+    /** If you do not have a specific DOM node to attach the loading directive, or if you simply prefer not to use loading as a directive, you can call this service with some configs to open a loading instance. */
     $loading (options: LoadingServiceOptions): ElLoadingComponent
   }
 }
