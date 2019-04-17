@@ -10,7 +10,8 @@
     "test:unit": "vue-cli-service test:unit",
     "yarn": "yarn run serve",
     "a": "node  vue.config.js",
-    "b": "node  test.js"
+    "b": "set NODE_ENV=development&&node  test.js",
+    "c": "node  b.js"
   },
   "dependencies": {
     "core-js": "^2.6.5",
