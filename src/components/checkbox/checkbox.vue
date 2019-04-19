@@ -1,86 +1,171 @@
 <template>
-
-     <div
-             class="el-switch"
-             :class="{ 'is-disabled': switchDisabled, 'is-checked': checked }"
-             role="switch"
-             :aria-checked="checked"
-             :aria-disabled="switchDisabled"
-             @click="switchValue"
-     >
-          <input
-                  class="el-switch__input"
-                  type="checkbox"
-                  @change="handleChange"
-                  ref="input"
-                  :id="id"
-                  :name="name"
-                  :true-value="activeValue"
-                  :false-value="inactiveValue"
-                  :disabled="switchDisabled"
-                  @keydown.enter="switchValue"
-          >
-          <span
-                  :class="['el-switch__label', 'el-switch__label--left', !checked ? 'is-active' : '']"
-                  v-if="inactiveIconClass || inactiveText">
-      <i :class="[inactiveIconClass]" v-if="inactiveIconClass"></i>
-      <span v-if="!inactiveIconClass && inactiveText" :aria-hidden="checked">{{ inactiveText }}</span>
-    </span>
-          <span class="el-switch__core" ref="core" :style="{ 'width': coreWidth + 'px' }">
-    </span>
-          <span
-                  :class="['el-switch__label', 'el-switch__label--right', checked ? 'is-active' : '']"
-                  v-if="activeIconClass || activeText">
-      <i :class="[activeIconClass]" v-if="activeIconClass"></i>
-      <span v-if="!activeIconClass && activeText" :aria-hidden="!checked">{{ activeText }}</span>
-    </span>
-     </div>
+    <label :class="wrapClasses">
+        <span :class="checkboxClasses">
+            <span :class="innerClasses"></span>
+            <input
+                v-if="group"
+                type="checkbox"
+                :class="inputClasses"
+                :disabled="disabled"
+                :value="label"
+                v-model="model"
+                :name="name"
+                @change="change"
+                @focus="onFocus"
+                @blur="onBlur">
+            <input
+                v-else
+                type="checkbox"
+                :class="inputClasses"
+                :disabled="disabled"
+                :checked="currentValue"
+                :name="name"
+                @change="change"
+                @focus="onFocus"
+                @blur="onBlur">
+        </span>
+        <slot><span v-if="showSlot">{{ label }}</span></slot>
+    </label>
 </template>
-
 <script>
-    import {Checkbox,Switch} from 'element-ui'
-    const components={
-        'el-checkbox':Checkbox,
-        'el-switch':Switch,
-    };
-    function WithConsole (WrappedComponent) {
+    import { findComponentUpward, oneOf } from '../../utils/assist';
+    import Emitter from '../../mixins/emitter';
 
-        console.log(WrappedComponent.methods);
-        return {
-            mounted () {
-                console.log('I have already mounted');
-            },
-            props: WrappedComponent.props,
-            render (h) {
-                const slots = Object.keys(this.$slots)
-                    .reduce((arr, key) => arr.concat(this.$slots[key]), [])
-                    .map(vnode => {
-                        vnode.context = this._self
-                        return vnode
-                    })
-                return h(WrappedComponent, {
-                    on: this.$listeners,
-                    props: this.$props,
-                    // 透传 scopedSlots
-                    scopedSlots: this.$scopedSlots,
-                    attrs: this.$attrs,
+    const prefixCls = 'ivu-checkbox';
 
-                }, slots)
+    export default {
+        name: 'Checkbox',
+        mixins: [ Emitter ],
+        props: {
+            disabled: {
+                type: Boolean,
+                default: false
             },
-            methods:WrappedComponent.methods,
-            computed:WrappedComponent.computed,
-            data(){
-                let json={
+            value: {
+                type: [String, Number, Boolean],
+                default: false
+            },
+            trueValue: {
+                type: [String, Number, Boolean],
+                default: true
+            },
+            falseValue: {
+                type: [String, Number, Boolean],
+                default: false
+            },
+            label: {
+                type: [String, Number, Boolean]
+            },
+            indeterminate: {
+                type: Boolean,
+                default: false
+            },
+            size: {
+                validator (value) {
+                    return oneOf(value, ['small', 'large', 'default']);
+                },
+                default () {
+                    return !this.$IVIEW || this.$IVIEW.size === '' ? 'default' : this.$IVIEW.size;
+                }
+            },
+            name: {
+                type: String
+            }
+        },
+        data () {
+            return {
+                model: [],
+                currentValue: this.value,
+                group: false,
+                showSlot: true,
+                parent: findComponentUpward(this, 'CheckboxGroup'),
+                focusInner: false
+            };
+        },
+        computed: {
+            wrapClasses () {
+                return [
+                    `${prefixCls}-wrapper`,
+                    {
+                        [`${prefixCls}-group-item`]: this.group,
+                        [`${prefixCls}-wrapper-checked`]: this.currentValue,
+                        [`${prefixCls}-wrapper-disabled`]: this.disabled,
+                        [`${prefixCls}-${this.size}`]: !!this.size
+                    }
+                ];
+            },
+            checkboxClasses () {
+                return [
+                    `${prefixCls}`,
+                    {
+                        [`${prefixCls}-checked`]: this.currentValue,
+                        [`${prefixCls}-disabled`]: this.disabled,
+                        [`${prefixCls}-indeterminate`]: this.indeterminate
+                    }
+                ];
+            },
+            innerClasses () {
+                return [
+                    `${prefixCls}-inner`,
+                    {
+                        [`${prefixCls}-focus`]: this.focusInner
+                    }
+                ];
+            },
+            inputClasses () {
+                return `${prefixCls}-input`;
+            }
+        },
+        mounted () {
+            this.parent = findComponentUpward(this, 'CheckboxGroup');
+            if (this.parent) {
+                this.group = true;
+            }
 
-                };
-                return Object.assign(json,WrappedComponent.data())
+            if (this.group) {
+                this.parent.updateModel(true);
+            } else {
+                this.updateModel();
+                this.showSlot = this.$slots.default !== undefined;
+            }
+        },
+        methods: {
+            change (event) {
+                if (this.disabled) {
+                    return false;
+                }
+
+                const checked = event.target.checked;
+                this.currentValue = checked;
+
+                const value = checked ? this.trueValue : this.falseValue;
+                this.$emit('input', value);
+
+                if (this.group) {
+                    this.parent.change(this.model);
+                } else {
+                    this.$emit('on-change', value);
+                    this.dispatch('FormItem', 'on-form-change', value);
+                }
             },
-            mixins:WrappedComponent.mixins
+            updateModel () {
+                this.currentValue = this.value === this.trueValue;
+            },
+            onBlur () {
+                this.focusInner = false;
+            },
+            onFocus () {
+                this.focusInner = true;
+            }
+        },
+        watch: {
+            value (val) {
+                if (val === this.trueValue || val === this.falseValue) {
+                    this.updateModel();
+                } else {
+                    throw 'Value should be trueValue or falseValue.';
+                }
+            }
         }
-    }
-    export default WithConsole(Switch)
+    };
 </script>
-
-<style scoped lang="less">
-
-</style>

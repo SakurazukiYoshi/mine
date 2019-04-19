@@ -1,5 +1,2 @@
-import loading from '_c/loading/src/loading';
-
-
-
+import loading from './src/loading';
 export default loading;
