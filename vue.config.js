@@ -26,8 +26,8 @@ module.exports = {
                     return args;
                 });
             config.resolve.alias
-                //.set('_c', resolve('src/components'))
-                .set('_c', '@/components')
+                .set('_c', resolve('src/components'))
+                //.set('_c', '@/components')
         }
     }
 }

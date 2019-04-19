@@ -1,19 +1,25 @@
 <template>
   <div class="about">
-    <sn-loading :visible="true"></sn-loading>
+    <sn-checkbox
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+    >备选项</sn-checkbox>
   </div>
 
 </template>
 <script>
-  import {Loading} from '_c'
+  import 'element-ui/lib/theme-chalk/index.css';
+  import {Checkbox} from '_c'
   const components={
-    'sn-loading':Loading
+    'sn-checkbox':Checkbox
   };
   export default {
     name:'app',
     mixins: [],
     data() {
-      return {}
+      return {
+          checked:true
+      }
     },
     computed: {},
     methods: {},
