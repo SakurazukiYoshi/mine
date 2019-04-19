@@ -5,7 +5,7 @@ const resolve = dir => path.join(__dirname, dir);
 
 // gzip --start
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
-const productionGzip = true // 是否使用gzip
+const productionGzip = true  // 是否使用gzip
 const productionGzipExtensions = ['js', 'css'] // 需要gzip压缩的文件后缀
 // gzip --end
 
@@ -13,7 +13,7 @@ const productionGzipExtensions = ['js', 'css'] // 需要gzip压缩的文件后�
 
 const cdn = {
     css: [
-        'https://unpkg.com/element-ui/lib/theme-chalk/index.css'
+        'https://unpkg.com/iview/dist/styles/iview.css'
     ],
     js: [
         'https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js',
@@ -35,17 +35,45 @@ module.exports = {
             threshold: 10240,
             minRatio: 0.8
         }))
+
     },
     chainWebpack: config => {
         if (isProduction) {
             config.plugin('html')
                 .tap(args => {
                     args[0].cdn = cdn;
+                    //html-webpack-plugin 使用 html-minifier
+/*                    args[0].minify={
+                        removeComments: true,
+                        collapseWhitespace: true,
+                        removeAttributeQuotes: true,
+                        minifyCSS: true // 压缩内联的 CSS
+                    };*/
                     return args;
                 });
             config.resolve.alias
                 .set('_c', resolve('src/components'))
                 //.set('_c', '@/components')
         }
+    },
+    devServer: {
+        proxy: {
+            '/server': {
+                target: 'http://www.dspnew.com',
+                changeOrigin: true,
+                pathRewrite: {
+                    '/server': '/'
+                }
+            }
+        },
+    },
+    css: {
+        loaderOptions: {
+            less: {
+                javascriptEnabled: true
+            }
+        },
+        //css单独分离
+        //extract: true,
     }
-}
+};
