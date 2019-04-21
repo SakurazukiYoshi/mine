@@ -77,3 +77,23 @@ vue-cli中的用法：
 	        }
 	    }
 	}
+
+
+
+
+## iview的css样式外链引入无效
+
+  <link href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" rel="stylesheet external nofollow" >
+
+
+这里需要注意的是`rel`这里的值一定要对应好，否者就会无效
+
+
+	rel='nofollow'属性
+	搜索引擎这个链接不是经过作者自己编辑的，所以这个链接不是一个信任票
+
+	rel=’external’
+	其 实rel=’external’只是一个替代target=”_blank” 的属性。target=”_blank” 的属性是打开新窗口。
+	
+	external就是指外部站点，我们要在新窗口中打开链接传统的通常做法是在链接后面加target="_blank"，我们采用过渡型的 DOCTYPE(xhtml1- transitional. dtd) 时没有问题，但是当我们使用严格的DOCTYPE(xhtml1-strict.dtd)时，这个方法将通不过 W3C的校验。
+

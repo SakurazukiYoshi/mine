@@ -59,6 +59,10 @@
             ghost: {
                 type: Boolean,
                 default: false
+            },
+            fixed: {
+                type: Boolean,
+                default: false
             }
         },
         data () {
@@ -77,7 +81,8 @@
                         [`${prefixCls}-${this.size}`]: this.size !== 'default',
                         [`${prefixCls}-loading`]: this.loading != null && this.loading,
                         [`${prefixCls}-icon-only`]: !this.showSlot && (!!this.icon || !!this.customIcon || this.loading),
-                        [`${prefixCls}-ghost`]: this.ghost
+                        [`${prefixCls}-ghost`]: this.ghost,
+                        [`${prefixCls}-fixed`]: this.fixed,
                     }
                 ];
             },
@@ -115,3 +120,77 @@
         }
     };
 </script>
+<style lang="less" scoped>
+    .ivu-btn{
+        background:rgba(255,255,255,1);
+        border:1px solid rgba(223, 226, 230, 1);
+        border-radius:2px;
+        font-size:14px;
+        font-weight:400;
+        color:rgba(40,40,41,1);
+        line-height: 1;
+        &:focus{
+            box-shadow:none;
+        }
+        &:hover{
+            background:#F5F6F7;
+            border:1px solid rgba(223, 226, 230, 1);
+            color:rgba(40,40,41,1);
+        }
+    }
+
+    html{
+        .ivu-btn-primary{
+            background-color: #2A9FF6;
+            color:rgba(255,255,255,1);
+            border-color:#2A9FF6;
+            &:hover{
+                background-color: #2793E6;
+                color:rgba(255,255,255,1);
+                border-color: #2793E6;
+            }
+        }
+        .ivu-btn-fixed{
+            display: inline-block;
+            width: 100px;
+            height: 36px;
+            padding: 0;
+            white-space:nowrap;   //不换行     都支持
+            text-overflow:ellipsis;
+            -o-text-overflow:ellipsis;   //省略号显示   都支持
+            overflow: hidden;
+        }
+        .ivu-btn-ghost{
+            display: inline-block;
+            padding: 0 16px;
+            height: 36px;
+            background-color: #fff;
+        }
+        .ivu-btn-ghost.ivu-btn-primary{
+            color:#2A9FF6;
+            &:hover{
+                background:#E9F5FE;
+                border-color:#2A9FF6;
+            }
+        }
+        .ivu-btn-ghost.ivu-btn-success{
+            color:#44C14A;
+            border-color: #44C14A;
+            &:hover{
+                background:#ECF9ED;
+                border-color:#44C14A;
+            }
+        }
+
+        .ivu-btn-ghost.ivu-btn-error{
+            color:#EB4D44;
+            border-color: #EB4D44;
+            &:hover{
+                background:#FDEDEC;
+                border-color:#EB4D44;
+            }
+        }
+
+
+    }
+</style>

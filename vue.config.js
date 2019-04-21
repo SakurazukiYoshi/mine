@@ -1,12 +1,16 @@
 const isProduction = true;
 const path=require('path');
+
+//转化为绝对路径
 const resolve = dir => path.join(__dirname, dir);
 
 
+
+
 // gzip --start
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
-const productionGzip = true  // 是否使用gzip
-const productionGzipExtensions = ['js', 'css'] // 需要gzip压缩的文件后缀
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const productionGzip = true;  // 是否使用gzip
+const productionGzipExtensions = ['js', 'css']; // 需要gzip压缩的文件后缀
 // gzip --end
 
 
@@ -55,8 +59,13 @@ module.exports = {
                 .set('_c', resolve('src/components'))
                 //.set('_c', '@/components')
         }
+
+
+/*        //引入全局的less变量
+        const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+        types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)));*/
     },
-    devServer: {
+/*    devServer: {
         proxy: {
             '/server': {
                 target: 'http://www.dspnew.com',
@@ -66,14 +75,29 @@ module.exports = {
                 }
             }
         },
-    },
+    },*/
     css: {
         loaderOptions: {
             less: {
-                javascriptEnabled: true
+                javascriptEnabled: true,
+                globalVars:{
+                    sub:'#7f8fa4'
+                }
             }
         },
-        //css单独分离
+        //css单独分离,需要热更新此处设置成false
         //extract: true,
     }
 };
+
+/*
+function addStyleResource(rule) {
+    rule.use('style-resource')
+        .loader('style-resources-loader')
+        .options({
+            patterns: [
+                path.resolve(__dirname, 'src/assets/color.less'), // 需要全局导入的less
+            ],
+        })
+}
+*/
