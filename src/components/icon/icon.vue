@@ -2,8 +2,7 @@
     <i :class="classes" :style="styles" @click="handleClick"></i>
 </template>
 <script>
-    const prefixCls = 'ivu-icon';
-
+    const prefixCls = 's-icon';
     export default {
         name: 'Icon',
         props: {
@@ -49,3 +48,10 @@
         }
     };
 </script>
+<style scoped lang="scss">
+    .s-icon{
+        &:hover{
+            color: #2198F0!important;
+        }
+    }
+</style>

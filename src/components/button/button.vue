@@ -120,7 +120,7 @@
         }
     };
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
     .ivu-btn{
         background:rgba(255,255,255,1);
         border:1px solid rgba(223, 226, 230, 1);
@@ -138,7 +138,6 @@
             color:rgba(40,40,41,1);
         }
     }
-
     html{
         .ivu-btn-primary{
             background-color: #2A9FF6;
@@ -148,6 +147,26 @@
                 background-color: #2793E6;
                 color:rgba(255,255,255,1);
                 border-color: #2793E6;
+            }
+        }
+        .ivu-btn-success{
+            background-color: #44c14a;
+            color:rgba(255,255,255,1);
+            border-color:#44c14a;
+            &:hover{
+                background-color: #47cb89;
+                color:rgba(255,255,255,1);
+                border-color: #47cb89;
+            }
+        }
+        .ivu-btn-error{
+            background-color: #EB4D44;
+            color:rgba(255,255,255,1);
+            border-color:#EB4D44;
+            &:hover{
+                background-color: #f16643;
+                color:rgba(255,255,255,1);
+                border-color: #f16643;
             }
         }
         .ivu-btn-fixed{
@@ -181,7 +200,6 @@
                 border-color:#44C14A;
             }
         }
-
         .ivu-btn-ghost.ivu-btn-error{
             color:#EB4D44;
             border-color: #EB4D44;
@@ -192,5 +210,12 @@
         }
 
 
+        .ivu-btn-circle{
+            border-radius:15px;
+            height: 30px;
+        }
+        .ivu-btn-fixed.ivu-btn-circle{
+            width: 80px;
+        }
     }
 </style>
