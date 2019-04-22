@@ -97,3 +97,45 @@ vue-cli中的用法：
 	
 	external就是指外部站点，我们要在新窗口中打开链接传统的通常做法是在链接后面加target="_blank"，我们采用过渡型的 DOCTYPE(xhtml1- transitional. dtd) 时没有问题，但是当我们使用严格的DOCTYPE(xhtml1-strict.dtd)时，这个方法将通不过 W3C的校验。
 
+
+
+
+## `vue.config`是在webpack上运行的内容和vue里面的有区别
+
+
+
+ES6标准发布后，module成为标准，标准的使用是以export指令导出接口，以import引入模块.
+
+但是在我们一贯的node模块中，我们采用的是CommonJS规范，使用require引入模块，使用module.exports导出接口.
+
+
+所以要定义变量的时候需要注意node和平常的js的区别：
+
+
+
+	// -------- node -----------
+	module.exports = {
+	  a : function() {},
+	  b : 'xxx'
+	};
+	
+	// -----------ES6 ----------------
+	export default{
+	  a : function() {},
+	  b : 'xxx'
+	}
+
+
+
+
+使用：
+
+	// b.js
+	
+	// ------------ node ---------
+	var m = require('./a');
+	m.a();
+	
+	// ------------ ES6 -------------
+    import m from './a'
+    m.a();

@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-     <div class="title">控件</div>
+<!--     <div class="title">控件</div>
      <div class="sub mt60">按钮</div>
      <div class="bc-white mt20  flex">
         <div>
@@ -25,17 +25,16 @@
              <p>宽度随字体数量变化，两侧距边框16px</p>
              <p>圆角：2px</p>
          </div>
-     </div>
+     </div>-->
   </div>
 
 </template>
 <script>
-  import {Button,ButtonGroup} from '_c'
-  import '@/assets/css/global.less'
+/*  import {Button,ButtonGroup} from '_c'
   const components={
     'sn-button':Button,
     'sn-button-group':ButtonGroup,
-  };
+  };*/
   export default {
     name:'app',
     mixins: [],
@@ -46,10 +45,10 @@
     methods: {},
     created(){
     },
-    components,
+    //components,
   }
 </script>
-<style lang="less" scoped>
+<!--<style lang="less" scoped>
   .box{
     position: absolute;
     bottom: 0;
@@ -83,4 +82,4 @@
     color:rgba(185,191,200,1);
     line-height:36px;
 }
-</style>
+</style>-->

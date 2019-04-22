@@ -4,6 +4,8 @@ const path=require('path');
 //转化为绝对路径
 const resolve = dir => path.join(__dirname, dir);
 
+const LessglobalVars=require(resolve('src/assets/js/color.js'));
+
 
 
 
@@ -57,7 +59,6 @@ module.exports = {
                 });
             config.resolve.alias
                 .set('_c', resolve('src/components'))
-                //.set('_c', '@/components')
         }
 
 
@@ -80,9 +81,12 @@ module.exports = {
         loaderOptions: {
             less: {
                 javascriptEnabled: true,
-                globalVars:{
-                    sub:'#7f8fa4'
-                }
+                globalVars:LessglobalVars
+            },
+            sass: {
+                // @/ 是 src/ 的别名
+                // 所以这里假设你有 `src/variables.scss` 这个文件
+                data: `@import "~@/assets/test/global.scss";`
             }
         },
         //css单独分离,需要热更新此处设置成false
@@ -90,14 +94,12 @@ module.exports = {
     }
 };
 
-/*
 function addStyleResource(rule) {
     rule.use('style-resource')
         .loader('style-resources-loader')
         .options({
             patterns: [
-                path.resolve(__dirname, 'src/assets/color.less'), // 需要全局导入的less
+                path.resolve(__dirname, 'src/assets/test/global.scss'), // 需要全局导入的less
             ],
         })
 }
-*/

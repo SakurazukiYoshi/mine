@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-
+       <span class="haha">错误提示文字</span>
   </div>
 </template>
 
@@ -16,3 +16,9 @@ export default {
   components
 }
 </script>
+
+<style lang="scss" scoped>
+  .haha{
+    color: $error;
+  }
+</style>
