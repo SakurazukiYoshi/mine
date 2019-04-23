@@ -1,46 +1,29 @@
 <template>
     <label :class="wrapClasses">
-        <span :class="checkboxClasses">
+        <span :class="radioClasses">
             <span :class="innerClasses"></span>
             <input
-                v-if="group"
-                type="checkbox"
-                :class="inputClasses"
-                :disabled="disabled"
-                :value="label"
-                v-model="model"
-                :name="name"
-                @change="change"
-                @focus="onFocus"
-                @blur="onBlur">
-            <input
-                v-else
-                type="checkbox"
+                type="radio"
                 :class="inputClasses"
                 :disabled="disabled"
                 :checked="currentValue"
-                :name="name"
+                :name="groupName"
                 @change="change"
                 @focus="onFocus"
                 @blur="onBlur">
-        </span>
-        <slot><span v-if="showSlot">{{ label }}</span></slot>
+        </span><slot>{{ label }}</slot>
     </label>
 </template>
 <script>
     import { findComponentUpward, oneOf } from '@/utils/assist';
     import Emitter from '@/mixins/emitter';
 
-    const prefixCls = 'ivu-checkbox';
+    const prefixCls = 'ivu-radio';
 
     export default {
-        name: 'Checkbox',
+        name: 'Radio',
         mixins: [ Emitter ],
         props: {
-            disabled: {
-                type: Boolean,
-                default: false
-            },
             value: {
                 type: [String, Number, Boolean],
                 default: false
@@ -54,9 +37,9 @@
                 default: false
             },
             label: {
-                type: [String, Number, Boolean]
+                type: [String, Number]
             },
-            indeterminate: {
+            disabled: {
                 type: Boolean,
                 default: false
             },
@@ -74,11 +57,11 @@
         },
         data () {
             return {
-                model: [],
                 currentValue: this.value,
                 group: false,
-                showSlot: true,
-                parent: findComponentUpward(this, 'CheckboxGroup'),
+                groupName: this.name,
+                parent: findComponentUpward(this, 'RadioGroup'),
+                focusWrapper: false,
                 focusInner: false
             };
         },
@@ -90,17 +73,17 @@
                         [`${prefixCls}-group-item`]: this.group,
                         [`${prefixCls}-wrapper-checked`]: this.currentValue,
                         [`${prefixCls}-wrapper-disabled`]: this.disabled,
-                        [`${prefixCls}-${this.size}`]: !!this.size
+                        [`${prefixCls}-${this.size}`]: !!this.size,
+                        [`${prefixCls}-focus`]: this.focusWrapper
                     }
                 ];
             },
-            checkboxClasses () {
+            radioClasses () {
                 return [
                     `${prefixCls}`,
                     {
                         [`${prefixCls}-checked`]: this.currentValue,
-                        [`${prefixCls}-disabled`]: this.disabled,
-                        [`${prefixCls}-indeterminate`]: this.indeterminate
+                        [`${prefixCls}-disabled`]: this.disabled
                     }
                 ];
             },
@@ -117,16 +100,23 @@
             }
         },
         mounted () {
-            this.parent = findComponentUpward(this, 'CheckboxGroup');
             if (this.parent) {
                 this.group = true;
+                if (this.name && this.name !== this.parent.name) {
+                    /* eslint-disable no-console */
+                    if (console.warn) {
+                        console.warn('[iview] Name does not match Radio Group name.');
+                    }
+                    /* eslint-enable no-console */
+                } else {
+                    this.groupName = this.parent.name;
+                }
             }
 
             if (this.group) {
-                this.parent.updateModel(true);
+                this.parent.updateValue();
             } else {
-                this.updateModel();
-                this.showSlot = this.$slots.default !== undefined;
+                this.updateValue();
             }
         },
         methods: {
@@ -142,26 +132,36 @@
                 this.$emit('input', value);
 
                 if (this.group) {
-                    this.parent.change(this.model);
+                    if (this.label !== undefined) {
+                        this.parent.change({
+                            value: this.label,
+                            checked: this.value
+                        });
+                    }
                 } else {
                     this.$emit('on-change', value);
                     this.dispatch('FormItem', 'on-form-change', value);
                 }
             },
-            updateModel () {
+            updateValue () {
                 this.currentValue = this.value === this.trueValue;
             },
             onBlur () {
+                this.focusWrapper = false;
                 this.focusInner = false;
             },
             onFocus () {
-                this.focusInner = true;
+                if (this.group && this.parent.type === 'button') {
+                    this.focusWrapper = true;
+                } else {
+                    this.focusInner = true;
+                }
             }
         },
         watch: {
             value (val) {
                 if (val === this.trueValue || val === this.falseValue) {
-                    this.updateModel();
+                    this.updateValue();
                 } else {
                     throw 'Value should be trueValue or falseValue.';
                 }
@@ -170,52 +170,44 @@
     };
 </script>
 <style lang="scss" scoped>
-    .ivu-checkbox{
-        .ivu-checkbox-inner{
-            width:16px;
-            height:16px;
-            border-radius:2px;
-        }
-        &:hover{
-            .ivu-checkbox-inner{
-                border-color: #2198F0;
-            }
-        }
+    .ivu-radio-focus{
+        box-shadow: none;
+    }
+    .ivu-radio{
         margin-right: 10px;
     }
-    .ivu-checkbox-disabled{
-        .ivu-checkbox-inner{
-            &+span{
-                color: $disabled;
-            }
-        }
-        &:hover{
-            .ivu-checkbox-inner{
-                border-color: #dcdee2;
-            }
-        }
-    }
-
-    .ivu-checkbox-checked{
-        .ivu-checkbox-inner{
-            background-color: #2198F0;
+    .ivu-radio-wrapper{
+        font-size: 14px;
+        .ivu-radio-inner{
+            border-color: #DFE2E6;
+            width:16px;
+            height:16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             &:after{
                 width: 6px;
-                height: 10px;
-                position: absolute;
-                top: 1px;
-                left: 4px;
-                border-radius:2px;
+                height: 6px;
+                background-color: #fff;
+                border-radius: 50%;
+                position: static;
             }
         }
-
     }
-
-    .ivu-checkbox-wrapper{
-        font-size: 14px;
-    }
-
-    .ivu-checkbox-focus{
-        box-shadow: none;
+    .ivu-radio-checked{
+        .ivu-radio-inner{
+            background-color: #2198F0;
+            border-color: #2198F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:after{
+                width: 6px;
+                height: 6px;
+                background-color: #fff;
+                border-radius: 50%;
+                position: static;
+            }
+        }
     }
 </style>

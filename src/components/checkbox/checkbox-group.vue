@@ -4,8 +4,8 @@
     </div>
 </template>
 <script>
-    import { findComponentsDownward, oneOf } from '../../utils/assist';
-    import Emitter from '../../mixins/emitter';
+    import { findComponentsDownward, oneOf } from '@/utils/assist';
+    import Emitter from '@/mixins/emitter';
 
     const prefixCls = 'ivu-checkbox-group';
 
